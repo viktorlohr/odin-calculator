@@ -4,6 +4,8 @@ const NONE = "none";
 const DIVIDE_BY_ZERO_ERROR = "DivideByZeroError";
 const INVALID_NUMBER_ERROR = "InvalidNumberError";
 const INVALID_OPERATOR_ERROR = "InvalidOperatorError";
+const INVALID_PHASE_ERROR = "InvalidPhaseError";
+const INVALID_INPUT_ERROR = "InvalidInputError";
 
 /*
   --- USER INPUT CONSTANTS
@@ -105,6 +107,17 @@ INPUT_PHASES = [ENTER_FIRST_NUMBER, ENTER_SECOND_NUMBER];
  */
 
 function transformCalcState(calcState) {
+  if (!(calcState.input_phase in INPUT_PHASES)) {
+    return INVALID_PHASE_ERROR;
+  }
+
+  if (!([calcState.lastUserInput, calcState.currentUserInput].every(i => i in USER_INPUTS))) {
+    return INVALID_INPUT_ERROR;
+  }
+
+  if (!([calcState.num1, calcState.num2].every(n => n.split().every(digit => digit in [...DIGITS, '.'])))) {
+    return INVALID_NUMBER_ERROR;
+  }
 
 }
 
