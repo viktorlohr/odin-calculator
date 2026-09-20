@@ -10,9 +10,6 @@ const TIMES = "*";
 const DIVIDE = "/";
 const MATH_OPERATORS = [PLUS, MINUS, TIMES, DIVIDE];
 
-const EQUAL = "=";
-const CLEAR = "clr";
-
 // Digits
 const ONE = "1";
 const TWO = "2";
@@ -25,6 +22,14 @@ const EIGHT = "8";
 const NINE = "9";
 const ZERO = "0";
 const DIGITS = [ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, ZERO];
+
+
+// Other Inputs
+const EQUAL = "=";
+const CLEAR = "clr";
+const OTHER_INPUTS = [EQUAL, CLEAR];
+
+const POSSIBLE_USER_INPUTS = [...DIGITS, ...MATH_OPERATORS, ...OTHER_INPUTS];
 
 // Math Functions
 const add = (a,b) => +a + +b;
@@ -87,6 +92,9 @@ function createUI() {
   createOtherBtns();
 }
 
+
+// --- Buttons ----
+
 function createDigitBtns() {
   const digitBtns = document.createElement('div');
   CONTAINER_EL.appendChild(digitBtns);
@@ -142,4 +150,28 @@ function createOtherBtns() {
 
   
   CONTAINER_EL.appendChild(otherBtns);
+}
+
+/*
+  --- UI LOGIC ---
+  "UI logic" describes how user inputs call the operate function
+
+  If the user presses a number after a number, it
+  is interpreted as adding a digit to the previous number.
+
+  However, if the user presses a number after pressing the 
+  equal sign, it is interpreted as starting a new number.
+
+  If the user presses an operator after pressing the equal sign,
+  it is interpreted that the user wants to use the last result 
+  as the first operand for the next operation.
+
+*/
+
+let num1 = 0;
+let num2 = 0;
+let lastPress = 
+
+function addEventListenersToBtns() {
+
 }
