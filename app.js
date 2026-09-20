@@ -11,6 +11,7 @@ const DIVIDE = "/";
 const MATH_OPERATORS = [PLUS, MINUS, TIMES, DIVIDE];
 
 const EQUAL = "=";
+const CLEAR = "clr";
 
 // Digits
 const ONE = "1";
@@ -83,7 +84,7 @@ createUI();
 function createUI() {
   createDigitBtns();
   createOperatorBtns();
-  addEqualsBtn();
+  createOtherBtns();
 }
 
 function createDigitBtns() {
@@ -93,7 +94,7 @@ function createDigitBtns() {
   for (let i = 0; i < 3; i++) {
     let digitRowEl = document.createElement('div');
     digitRowEl.style.display = 'flex';
-    digitRowEl.style.padding = '12px';
+    digitRowEl.style.padding = '6px';
     digitRowEl.style.gap = '6px';
 
     for (let j = 0; j < 3; j++) { 
@@ -125,8 +126,20 @@ function createOperatorBtns() {
   CONTAINER_EL.appendChild(operatorBtns);
 }
 
-function addEqualsBtn() {
+function createOtherBtns() {
+  const otherBtns = document.createElement('div');
+  otherBtns.style.display = 'flex';
+  otherBtns.style.flexDirection = 'column';
+  otherBtns.style.gap = '12px';
+  
   const equalsBtn = document.createElement('button');
   equalsBtn.textContent = EQUAL;
-  CONTAINER_EL.appendChild(equalsBtn);
+  otherBtns.appendChild(equalsBtn);
+
+  const clearBtn = document.createElement('button');
+  clearBtn.textContent = CLEAR;
+  otherBtns.appendChild(clearBtn);
+
+  
+  CONTAINER_EL.appendChild(otherBtns);
 }
