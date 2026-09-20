@@ -7,8 +7,8 @@ const INVALID_OPERATOR_ERROR = "InvalidOperatorError";
 const PLUS = "+";
 const MINUS = "-";
 const TIMES = "*";
-const DIV = "/";
-const MATH_OPERATORS = [PLUS, MINUS, TIMES, DIV];
+const DIVIDE = "/";
+const MATH_OPERATORS = [PLUS, MINUS, TIMES, DIVIDE];
 
 // Digits
 const ONE = "1";
@@ -60,6 +60,8 @@ function operate(operator, num1, num2) {
 const CONTAINER_EL = document.querySelector('.calc-container');
 
 function createDigitBtns() {
+  const digitBtnsEl = document.createElement('div');
+  CONTAINER_EL.appendChild(digitBtnsEl);
 
   for (let i = 0; i < 3; i++) {
     let digitRowEl = document.createElement('div');
@@ -80,7 +82,7 @@ function createDigitBtns() {
 }
 
 function createOperatorBtns() {
-  
+
 }
 
 
