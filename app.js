@@ -56,12 +56,37 @@ function operate(operator, num1, num2) {
 
 
 
-// --- UI ---
+/* 
+--- UI ---
+*/
+
+// Size constants
+TINIEST = '2px';
+TINY = '4px';
+SMALLEST = '6px';
+SMALLER = '8px';
+SMALL = '10px';
+NORMAL = '12px';
+LARGE = '16px';
+LARGER = '24px';
+LARGEST = '32px';
+HUGE = '42px';
+HUGER = '48px';
+HUGEST = '64px';
+
 const CONTAINER_EL = document.querySelector('.calc-container');
+CONTAINER_EL.style.display = 'flex';
+
+createUI();
+
+function createUI() {
+  createDigitBtns();
+  createOperatorBtns();
+}
 
 function createDigitBtns() {
-  const digitBtnsEl = document.createElement('div');
-  CONTAINER_EL.appendChild(digitBtnsEl);
+  const digitBtns = document.createElement('div');
+  CONTAINER_EL.appendChild(digitBtns);
 
   for (let i = 0; i < 3; i++) {
     let digitRowEl = document.createElement('div');
@@ -77,14 +102,23 @@ function createDigitBtns() {
       digitRowEl.appendChild(digitEl);
     }
 
-    CONTAINER_EL.appendChild(digitRowEl);
+    digitBtns.appendChild(digitRowEl);
   }
 }
 
 function createOperatorBtns() {
+  const operatorBtns = document.createElement('div');
+  operatorBtns.style.display = 'flex';
+  operatorBtns.style.flexDirection = 'column';
+  operatorBtns.style.gap = '12px';
 
+  MATH_OPERATORS.map(operator => {
+    let operatorBtn = document.createElement('button');
+    operatorBtn.textContent = operator;
+
+    operatorBtns.appendChild(operatorBtn);
+  });
+
+  CONTAINER_EL.appendChild(operatorBtns);
 }
 
-
-const test = createDigitBtns;
-test();
