@@ -78,19 +78,6 @@ function operate(operator, num1, num2) {
 
 /*
   TRANSFORMING THE "CALC STATE"
-
-  If the user presses a digit after a digit, it
-  shall be interpreted as adding a digit to the previous number.
-
-  However, if the user presses a digit after pressing the 
-  equal sign, it shall be interpreted as starting a new number.
-
-  If the user presses an operator after pressing the equal sign,
-  it shall be interpreted that the user wants to use the last result 
-  as the first operand for the next operation.
-
-  The next function's purpose is deciding how to interpret the input
-
 */
 
 ENTER_FIRST_NUMBER = "enterFirstNumber";
@@ -107,6 +94,21 @@ INPUT_PHASES = [ENTER_FIRST_NUMBER, ENTER_SECOND_NUMBER];
  */
 
 function transformCalcState(calcState) {
+  /**
+   * @param {CalcState} calcState
+   * @returns {CalcState}
+   * If the user presses a digit after a digit, it
+   * shall be interpreted as adding a digit to the previous number.
+
+   * However, if the user presses a digit after pressing the 
+    equal sign, it shall be interpreted as starting a new number.
+
+    If the user presses an operator after pressing the equal sign,
+    it shall be interpreted that the user wants to use the last result 
+    as the first operand for the next operation.
+
+    The next function's purpose is deciding how to interpret the input
+   */
   if (!(calcState.input_phase in INPUT_PHASES)) {
     return INVALID_PHASE_ERROR;
   }
