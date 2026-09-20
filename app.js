@@ -59,7 +59,7 @@ function operate(operator, num1, num2) {
 // --- UI ---
 const CONTAINER_EL = document.querySelector('.calc-container');
 
-function createDigitRows() {
+function createDigitBtns() {
 
   for (let i = 0; i < 3; i++) {
     let digitRowEl = document.createElement('div');
@@ -79,6 +79,10 @@ function createDigitRows() {
   }
 }
 
+function createOperatorBtns() {
+  
+}
 
-const test = createDigitRows;
+
+const test = createDigitBtns;
 test();
