@@ -1,7 +1,13 @@
+const NONE = "none";
+
 // Errors
 const DIVIDE_BY_ZERO_ERROR = "DivideByZeroError";
 const INVALID_NUMBER_ERROR = "InvalidNumberError";
 const INVALID_OPERATOR_ERROR = "InvalidOperatorError";
+
+/*
+  --- USER INPUT CONSTANTS
+*/
 
 // Math operator constants
 const PLUS = "+";
@@ -29,7 +35,12 @@ const EQUAL = "=";
 const CLEAR = "clr";
 const OTHER_INPUTS = [EQUAL, CLEAR];
 
-const POSSIBLE_USER_INPUTS = [...DIGITS, ...MATH_OPERATORS, ...OTHER_INPUTS];
+
+const USER_INPUTS = [...DIGITS, ...MATH_OPERATORS, ...OTHER_INPUTS];
+
+/*
+  --- LOGIC ---
+*/
 
 // Math Functions
 const add = (a,b) => +a + +b;
@@ -60,6 +71,41 @@ function operate(operator, num1, num2) {
   let f = MATH_FUNCTIONS[MATH_OPERATORS.indexOf(operator)]
 
   return f(num1,num2);
+}
+
+
+/*
+  TRANSFORMING THE "CALC STATE"
+
+  If the user presses a digit after a digit, it
+  shall be interpreted as adding a digit to the previous number.
+
+  However, if the user presses a digit after pressing the 
+  equal sign, it shall be interpreted as starting a new number.
+
+  If the user presses an operator after pressing the equal sign,
+  it shall be interpreted that the user wants to use the last result 
+  as the first operand for the next operation.
+
+  The next function's purpose is deciding how to interpret the input
+
+*/
+
+ENTER_FIRST_NUMBER = "enterFirstNumber";
+ENTER_SECOND_NUMBER = "enterSecondNumber";
+INPUT_PHASES = [ENTER_FIRST_NUMBER, ENTER_SECOND_NUMBER];
+
+/**
+ * @typedef {Object} CalcState
+ * @property {string} input_phase -- see definition of INPUT_PHASES
+ * @property {string} num1
+ * @property {string} num2
+ * @property {string} lastUserInput -- see definition of USER_INPUTS
+ * @property {string} currentUserInput
+ */
+
+function transformCalcState(calcState) {
+
 }
 
 
@@ -152,25 +198,11 @@ function createOtherBtns() {
   CONTAINER_EL.appendChild(otherBtns);
 }
 
-/*
-  --- UI LOGIC ---
-  "UI logic" describes how user inputs call the operate function
-
-  If the user presses a number after a number, it
-  is interpreted as adding a digit to the previous number.
-
-  However, if the user presses a number after pressing the 
-  equal sign, it is interpreted as starting a new number.
-
-  If the user presses an operator after pressing the equal sign,
-  it is interpreted that the user wants to use the last result 
-  as the first operand for the next operation.
-
-*/
 
 let num1 = 0;
 let num2 = 0;
-let lastPress = 
+let lastPress = "";
+let lastResult = "";
 
 function addEventListenersToBtns() {
 
