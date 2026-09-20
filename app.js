@@ -10,6 +10,8 @@ const TIMES = "*";
 const DIVIDE = "/";
 const MATH_OPERATORS = [PLUS, MINUS, TIMES, DIVIDE];
 
+const EQUAL = "=";
+
 // Digits
 const ONE = "1";
 const TWO = "2";
@@ -61,27 +63,27 @@ function operate(operator, num1, num2) {
 */
 
 // Size constants
-TINIEST = '2px';
-TINY = '4px';
-SMALLEST = '6px';
-SMALLER = '8px';
-SMALL = '10px';
-NORMAL = '12px';
-LARGE = '16px';
-LARGER = '24px';
-LARGEST = '32px';
-HUGE = '42px';
-HUGER = '48px';
-HUGEST = '64px';
+// TINIEST = '2px';
+// TINY = '4px';
+// SMALLEST = '6px';
+// SMALLER = '8px';
+// SMALL = '10px';
+// NORMAL = '12px';
+// LARGE = '16px';
+// LARGER = '24px';
+// LARGEST = '32px';
+// HUGE = '42px';
+// HUGER = '48px';
+// HUGEST = '64px';
 
 const CONTAINER_EL = document.querySelector('.calc-container');
-CONTAINER_EL.style.display = 'flex';
 
 createUI();
 
 function createUI() {
   createDigitBtns();
   createOperatorBtns();
+  addEqualsBtn();
 }
 
 function createDigitBtns() {
@@ -92,7 +94,7 @@ function createDigitBtns() {
     let digitRowEl = document.createElement('div');
     digitRowEl.style.display = 'flex';
     digitRowEl.style.padding = '12px';
-    digitRowEl.style.gap = "6px";
+    digitRowEl.style.gap = '6px';
 
     for (let j = 0; j < 3; j++) { 
       let digitEl = document.createElement('button');
@@ -111,6 +113,7 @@ function createOperatorBtns() {
   operatorBtns.style.display = 'flex';
   operatorBtns.style.flexDirection = 'column';
   operatorBtns.style.gap = '12px';
+  operatorBtns.style.padding = '6px';
 
   MATH_OPERATORS.map(operator => {
     let operatorBtn = document.createElement('button');
@@ -122,3 +125,8 @@ function createOperatorBtns() {
   CONTAINER_EL.appendChild(operatorBtns);
 }
 
+function addEqualsBtn() {
+  const equalsBtn = document.createElement('button');
+  equalsBtn.textContent = EQUAL;
+  CONTAINER_EL.appendChild(equalsBtn);
+}
