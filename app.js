@@ -7,9 +7,9 @@ const INVALID_OPERATOR_ERROR = "InvalidOperatorError";
 const PLUS = "+";
 const MINUS = "-";
 const TIMES = "*";
-const DIVIDE = "/";
+const DIV = "/";
 
-const MATH_OPERATORS = [PLUS, MINUS, TIMES, DIVIDE];
+const MATH_OPERATORS = [PLUS, MINUS, TIMES, DIV];
 
 // Math Functions
 const add = (a,b) => +a + +b;
@@ -23,14 +23,24 @@ const divide = (a,b) => {
   return (a / b).toFixed(2);
 }
 
+const MATH_FUNCTIONS = [add, subtract, multiply, divide];
+
 
 function operate(operator, num1, num2) {
   if (!operator in MATH_OPERATORS) {
     return INVALID_OPERATOR_ERROR;
   }
-  if (typeof num1 != Number || typeof num2 != Number) {
+
+  [num1, num2].map(n => Number(n));
+
+  if ((typeof num1 != 'number') || (typeof num2 != 'number')) {
     return INVALID_NUMBER_ERROR;
   }
   
+  let f = MATH_FUNCTIONS[MATH_OPERATORS.indexOf(operator)]
+
+  return f(num1,num2);
 }
+
+
 
