@@ -11,7 +11,6 @@ const DIV = "/";
 const MATH_OPERATORS = [PLUS, MINUS, TIMES, DIV];
 
 // Digits
-const ZERO = "0";
 const ONE = "1";
 const TWO = "2";
 const THREE = "3";
@@ -21,7 +20,8 @@ const SIX = "6";
 const SEVEN = "7";
 const EIGHT = "8";
 const NINE = "9";
-const DIGITS = [ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE];
+const ZERO = "0";
+const DIGITS = [ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, ZERO];
 
 // Math Functions
 const add = (a,b) => +a + +b;
@@ -57,6 +57,28 @@ function operate(operator, num1, num2) {
 
 
 // --- UI ---
-const container = document.querySelector('.calc-container');
+const CONTAINER_EL = document.querySelector('.calc-container');
+
+function createDigitRows() {
+
+  for (let i = 0; i < 3; i++) {
+    let digitRowEl = document.createElement('div');
+    digitRowEl.style.display = 'flex';
+    digitRowEl.style.padding = '12px';
+    digitRowEl.style.gap = "6px";
+
+    for (let j = 0; j < 3; j++) { 
+      let digitEl = document.createElement('button');
+
+      digitEl.textContent = DIGITS[3*j + i];
+      
+      digitRowEl.appendChild(digitEl);
+    }
+
+    CONTAINER_EL.appendChild(digitRowEl);
+  }
+}
 
 
+const test = createDigitRows;
+test();
