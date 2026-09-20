@@ -8,8 +8,20 @@ const PLUS = "+";
 const MINUS = "-";
 const TIMES = "*";
 const DIV = "/";
-
 const MATH_OPERATORS = [PLUS, MINUS, TIMES, DIV];
+
+// Digits
+const ZERO = "0";
+const ONE = "1";
+const TWO = "2";
+const THREE = "3";
+const FOUR = "4";
+const FIVE = "5";
+const SIX = "6";
+const SEVEN = "7";
+const EIGHT = "8";
+const NINE = "9";
+const DIGITS = [ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE];
 
 // Math Functions
 const add = (a,b) => +a + +b;
@@ -42,5 +54,9 @@ function operate(operator, num1, num2) {
   return f(num1,num2);
 }
 
+
+
+// --- UI ---
+const container = document.querySelector('.calc-container');
 
 
