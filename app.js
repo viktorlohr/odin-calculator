@@ -131,9 +131,8 @@ function transformCalcState(calcState) {
 
 
   if (OPERATORS.includes(calcState.currentUserInput)) {
-      calcState.operator = calcState.currentUserInput;
-
-      calcState.inputPhase = ENTER_SECOND_NUMBER;
+    calcState.operator = calcState.currentUserInput;
+    calcState.inputPhase = ENTER_SECOND_NUMBER;
 
   } else if (DIGITS.includes(calcState.currentUserInput)) {
     switch (calcState.inputPhase) {
@@ -144,7 +143,6 @@ function transformCalcState(calcState) {
         calcState.num2 = calcState.num2.concat(calcState.currentUserInput);
         break;
     }
-
   } else if (calcState.currentUserInput === EQUAL) {
     if (calcState.num1 === "") {
 
@@ -240,7 +238,8 @@ function createUI() {
 
 function createDigitBtns() {
   const digitBtns = document.createElement('div');
-  CONTAINER_EL.appendChild(digitBtns);
+  digitBtns.style.display = 'flex';
+  digitBtns.style.flexDirection = 'column';
 
   for (let i = 0; i < 3; i++) {
     let digitRowEl = document.createElement('div');
@@ -258,6 +257,12 @@ function createDigitBtns() {
 
     digitBtns.appendChild(digitRowEl);
   }
+  const zeroButton = document.createElement('button');
+  zeroButton.textContent = ZERO;
+  zeroButton.style.alignSelf = 'center';
+  digitBtns.appendChild(zeroButton);
+
+  CONTAINER_EL.appendChild(digitBtns);
 }
 
 function createOperatorBtns() {
@@ -301,6 +306,20 @@ let num2 = 0;
 let lastPress = "";
 let lastResult = "";
 
-function addEventListenersToBtns() {
 
+let calcState = {
+  inputPhase: ENTER_FIRST_NUMBER,
+  num1: "",
+  num2: "",
+  operator: "",
+  lastResult: "",
+  currentUserInput: "",
 }
+
+btns = Array.from(document.querySelectorAll('button'));
+btns.map(b => b.addEventListener('click', () => {
+    calcState.currentUserInput = b.textContent;
+    calcState = transformCalcState(calcState);
+    console.log(calcState);
+  }));
+
