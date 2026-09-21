@@ -6,6 +6,9 @@ const INVALID_NUMBER_ERROR = "InvalidNumberError";
 const INVALID_OPERATOR_ERROR = "InvalidOperatorError";
 const INVALID_PHASE_ERROR = "InvalidPhaseError";
 const INVALID_INPUT_ERROR = "InvalidInputError";
+const UNKNOWN_CALC_STATE_ERROR = "UnkownCalcStateError";
+
+const ERRORS = [DIVIDE_BY_ZERO_ERROR, INVALID_INPUT_ERROR, INVALID_OPERATOR_ERROR, INVALID_PHASE_ERROR, UNKNOWN_CALC_STATE_ERROR];
 
 /*
   --- USER INPUT CONSTANTS
@@ -104,7 +107,7 @@ function clearCalcState(calcState) {
   calcState.num2 = NONE;
   calcState.operator = NONE;
   calcState.inputPhase = ENTER_FIRST_NUMBER;
-
+  // Note that lastResult is preserverd;
 }
 
 function transformCalcState(calcState) {
@@ -133,24 +136,35 @@ function transformCalcState(calcState) {
       }
 
       calcState.inputPhase = ENTER_SECOND_NUMBER;
-    }
 
-  if (calcState.currentUserInput === EQUAL) {
-    
-
-    calcState.lastResult = String(operate(calcState.operator, calcState.num1, calcState.num2));
-  }
-  
-  if (calcState.currentUserInput in DIGITS) {
+  }  else if (calcState.currentUserInput in DIGITS) {
     switch (calcState.inputPhase) {
       case ENTER_FIRST_NUMBER:
         calcState.num1 = num1.concat(calcState.currentUserInput);
 
       case ENTER_SECOND_NUMBER:
         calcState.num2 = num2.concat(calcState.currentUserInput);
+
     }
+  } else if (calcState.currentUserInput === EQUAL) {
+    maybe_result = String(operate(calcState.operator, calcState.num1, calcState.num2));
+
+    if (maybe_result in ERRORS) {
+      return maybe_result;
+    }
+    
+    calcState.lastResult = maybe_result;
+
+    clearCalcState(calcState);
+
+  } else if (calcState.currentUserInput === CLEAR) {
+    clearCalcState(calcState);
+
+  } else {
+    return UNKNOWN_CALC_STATE_ERROR;
   }
 
+  return calcState;
 }
 
 
