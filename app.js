@@ -64,7 +64,7 @@ const MATH_FUNCTIONS = [add, subtract, multiply, divide];
 
 
 function operate(operator, num1, num2) {
-  if (!operator in OPERATORS) {
+  if (!(OPERATORS.includes(operator))) {
     return INVALID_OPERATOR_ERROR;
   }
 
@@ -104,8 +104,8 @@ function clearCalcState(calcState) {
    * @returns {CalcState}
   */
 
-  calcState.num1 = NONE;
-  calcState.num2 = NONE;
+  calcState.num1 = "";
+  calcState.num2 = "";
   calcState.operator = NONE;
   calcState.inputPhase = ENTER_FIRST_NUMBER;
   calcState.currentUserInput = NONE;
@@ -120,20 +120,16 @@ function transformCalcState(calcState) {
    * @param {CalcState} calcState
    * @returns {CalcState}
    */
-  if (!(calcState.input_phase in INPUT_PHASES)) {
+  if (!(INPUT_PHASES.includes(calcState.inputPhase))) {
     return INVALID_PHASE_ERROR;
   }
 
-  if (!([calcState.lastUserInput, calcState.currentUserInput].every(i => i in USER_INPUTS))) {
+  if (!(USER_INPUTS.includes(calcState.currentUserInput))) {
     return INVALID_INPUT_ERROR;
   }
 
-  if (!([calcState.num1, calcState.num2].every(n => n.split().every(digit => digit in [...DIGITS, '.'])))) {
-    return INVALID_NUMBER_ERROR;
-  }
 
-
-  if (calcState.currentUserInput in OPERATORS) {
+  if (OPERATORS.includes(calcState.currentUserInput)) {
       calcState.operator = calcState.currentUserInput;
 
       if (calcState.num1 === NONE) {
@@ -146,14 +142,14 @@ function transformCalcState(calcState) {
 
       calcState.inputPhase = ENTER_SECOND_NUMBER;
 
-  }  else if (calcState.currentUserInput in DIGITS) {
+  }  else if (DIGITS.includes(calcState.currentUserInput)) {
     switch (calcState.inputPhase) {
       case ENTER_FIRST_NUMBER:
-        calcState.num1 = num1.concat(calcState.currentUserInput);
-
+        calcState.num1 = calcState.num1.concat(calcState.currentUserInput);
+        break;
       case ENTER_SECOND_NUMBER:
-        calcState.num2 = num2.concat(calcState.currentUserInput);
-
+        calcState.num2 = calcState.num2.concat(calcState.currentUserInput);
+        break;
     }
   } else if (calcState.currentUserInput === EQUAL) {
     maybe_result = String(operate(calcState.operator, calcState.num1, calcState.num2));
@@ -179,12 +175,15 @@ function transformCalcState(calcState) {
 /** CalcState Test */
 
 let testState = {
-  num1: NONE,
-  num2: NONE,
-  operator: NONE,
-  inputPhase: ENTER_FIRST_NUMBER,
+  num1: "10",
+  num2: "2",
+  operator: MINUS,
+  inputPhase: ENTER_SECOND_NUMBER,
+  currentUserInput: EQUAL,
   lastResult: NONE,
 };
+
+transformCalcState(testState);
 
 // testState.lastResult = NONE;
 
