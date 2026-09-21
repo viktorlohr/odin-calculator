@@ -16,7 +16,7 @@ const PLUS = "+";
 const MINUS = "-";
 const TIMES = "*";
 const DIVIDE = "/";
-const MATH_OPERATORS = [PLUS, MINUS, TIMES, DIVIDE];
+const OPERATORS = [PLUS, MINUS, TIMES, DIVIDE];
 
 // Digits
 const ONE = "1";
@@ -38,7 +38,7 @@ const CLEAR = "clr";
 const OTHER_INPUTS = [EQUAL, CLEAR];
 
 
-const USER_INPUTS = [...DIGITS, ...MATH_OPERATORS, ...OTHER_INPUTS];
+const USER_INPUTS = [...DIGITS, ...OPERATORS, ...OTHER_INPUTS];
 
 /*
   --- LOGIC ---
@@ -60,7 +60,7 @@ const MATH_FUNCTIONS = [add, subtract, multiply, divide];
 
 
 function operate(operator, num1, num2) {
-  if (!operator in MATH_OPERATORS) {
+  if (!operator in OPERATORS) {
     return INVALID_OPERATOR_ERROR;
   }
 
@@ -70,7 +70,7 @@ function operate(operator, num1, num2) {
     return INVALID_NUMBER_ERROR;
   }
   
-  let f = MATH_FUNCTIONS[MATH_OPERATORS.indexOf(operator)]
+  let f = MATH_FUNCTIONS[OPERATORS.indexOf(operator)]
 
   return f(num1,num2);
 }
@@ -86,28 +86,31 @@ INPUT_PHASES = [ENTER_FIRST_NUMBER, ENTER_SECOND_NUMBER];
 
 /**
  * @typedef {Object} CalcState
- * @property {string} input_phase -- see definition of INPUT_PHASES
+ * @property {string} inputPhase -- see definition of INPUT_PHASES
  * @property {string} num1
+ * @property {string} operator
  * @property {string} num2
- * @property {string} lastUserInput -- see definition of USER_INPUTS
- * @property {string} currentUserInput
+ * @property {string} currentUserInput -- see definition of USER_INPUTS
+ * @property {string} lastResult
  */
+
+function clearCalcState(calcState) {
+  /**
+   * @param {CalcState} calcState
+   * @returns {CalcState}
+  */
+
+  calcState.num1 = NONE;
+  calcState.num2 = NONE;
+  calcState.operator = NONE;
+  calcState.inputPhase = ENTER_FIRST_NUMBER;
+
+}
 
 function transformCalcState(calcState) {
   /**
    * @param {CalcState} calcState
    * @returns {CalcState}
-   * If the user presses a digit after a digit, it
-   * shall be interpreted as adding a digit to the previous number.
-
-   * However, if the user presses a digit after pressing the 
-    equal sign, it shall be interpreted as starting a new number.
-
-    If the user presses an operator after pressing the equal sign,
-    it shall be interpreted that the user wants to use the last result 
-    as the first operand for the next operation.
-
-    The next function's purpose is deciding how to interpret the input
    */
   if (!(calcState.input_phase in INPUT_PHASES)) {
     return INVALID_PHASE_ERROR;
@@ -119,6 +122,33 @@ function transformCalcState(calcState) {
 
   if (!([calcState.num1, calcState.num2].every(n => n.split().every(digit => digit in [...DIGITS, '.'])))) {
     return INVALID_NUMBER_ERROR;
+  }
+
+
+  if (calcState.currentUserInput in OPERATORS) {
+      calcState.operator = calcState.currentUserInput;
+
+      if (calcState.num1 === NONE) {
+        calcState.num1 = calcState.lastResult;
+      }
+
+      calcState.inputPhase = ENTER_SECOND_NUMBER;
+    }
+
+  if (calcState.currentUserInput === EQUAL) {
+    
+
+    calcState.lastResult = String(operate(calcState.operator, calcState.num1, calcState.num2));
+  }
+  
+  if (calcState.currentUserInput in DIGITS) {
+    switch (calcState.inputPhase) {
+      case ENTER_FIRST_NUMBER:
+        calcState.num1 = num1.concat(calcState.currentUserInput);
+
+      case ENTER_SECOND_NUMBER:
+        calcState.num2 = num2.concat(calcState.currentUserInput);
+    }
   }
 
 }
@@ -185,7 +215,7 @@ function createOperatorBtns() {
   operatorBtns.style.gap = '12px';
   operatorBtns.style.padding = '6px';
 
-  MATH_OPERATORS.map(operator => {
+  OPERATORS.map(operator => {
     let operatorBtn = document.createElement('button');
     operatorBtn.textContent = operator;
 
