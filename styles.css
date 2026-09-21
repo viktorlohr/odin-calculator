@@ -3,3 +3,8 @@
   align-items: center;
   gap: 6px;
 }
+
+.display {
+  padding: 6px;
+  size: 16px;
+}

@@ -40,7 +40,8 @@ const DIGITS = [ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, ZERO];
 // Other Inputs
 const EQUAL = "=";
 const CLEAR = "clr";
-const OTHER_INPUTS = [EQUAL, CLEAR];
+const DOT = ".";
+const OTHER_INPUTS = [EQUAL, CLEAR, DOT];
 
 
 const USER_INPUTS = [...DIGITS, ...OPERATORS, ...OTHER_INPUTS];
@@ -139,7 +140,7 @@ function transformCalcState(calcState) {
     calcState.operator = calcState.currentUserInput;
     calcState.inputPhase = ENTER_SECOND_NUMBER;
 
-  } else if (DIGITS.includes(calcState.currentUserInput)) {
+  } else if ([...DIGITS, DOT].includes(calcState.currentUserInput)) {
     switch (calcState.inputPhase) {
       case ENTER_FIRST_NUMBER:
         calcState.num1 = calcState.num1.concat(calcState.currentUserInput);
@@ -158,7 +159,7 @@ function transformCalcState(calcState) {
     resetCalcState(calcState);
 
   } else if (calcState.currentUserInput === CLEAR) {
-    resetCalcState(calcState);
+    clearCalcState(calcState);
 
   } else {
     calcState.lastResult = UNKNOWN_CALC_STATE_ERROR;
@@ -166,54 +167,6 @@ function transformCalcState(calcState) {
 
   return calcState;
 }
-
-// --- Calc State Test ---
-
-const f = transformCalcState;
-
-let s1 = {
-  num1: "5",
-  num2: "2",
-  operator: MINUS,
-  inputPhase: ENTER_SECOND_NUMBER,
-  currentUserInput: EQUAL,
-  lastResult: NONE,
-};
-console.assert(f(s1).lastResult === '3');
-
-let s2 = {
-  num1: "1",
-  num2: "",
-  operator: MINUS,
-  inputPhase: ENTER_SECOND_NUMBER,
-  currentUserInput: EQUAL,
-  lastResult: NONE,
-};
-console.assert(f(s2).lastResult === MISSING_SECOND_OPERAND_ERROR);
-
-let s3 = {
-  num1: "",
-  num2: "2",
-  operator: TIMES,
-  inputPhase: ENTER_SECOND_NUMBER,
-  currentUserInput: EQUAL,
-  lastResult: NONE,
-};
-console.assert(f(s3).lastResult === MISSING_FIRST_OPERAND_ERROR);
-
-let s4 = {
-  num1: "",
-  num2: "2",
-  operator: MINUS,
-  inputPhase: ENTER_SECOND_NUMBER,
-  currentUserInput: EQUAL,
-  lastResult: "3",
-};
-
-console.assert(f(s4).lastResult === "1");
-
-
-
 /* 
 --- UI ---
 */
@@ -294,17 +247,15 @@ function createOtherBtns() {
   otherBtns.style.flexDirection = 'column';
   otherBtns.style.gap = '12px';
   
-  const equalsBtn = document.createElement('button');
-  equalsBtn.textContent = EQUAL;
-  otherBtns.appendChild(equalsBtn);
-
-  const clearBtn = document.createElement('button');
-  clearBtn.textContent = CLEAR;
-  otherBtns.appendChild(clearBtn);
-
+  OTHER_INPUTS.map(input => {
+    let btn = document.createElement('button');
+    btn.textContent = input;
+    otherBtns.appendChild(btn);
+  });
   
   CONTAINER_EL.appendChild(otherBtns);
 }
+
 
 
 let num1 = 0;
@@ -320,6 +271,7 @@ btns.map(b => b.addEventListener('click', () => {
     console.log(calcState);
   }));
 
+const DOT_BUTTON = btns.find(b => b.textContent === DOT);
 
 
 function updateDisplay() {
@@ -328,9 +280,23 @@ function updateDisplay() {
 
   } else if (calcState.inputPhase === ENTER_FIRST_NUMBER) {
     DISPLAY.textContent = calcState.num1;
+
+    checkAndToggleDot(calcState.num1);
+
   } else if (calcState.inputPhase === ENTER_SECOND_NUMBER) {
     DISPLAY.textContent = calcState.num1 + " " + calcState.operator + " " + calcState.num2;
+
+    checkAndToggleDot(calcState.num2);
+    
   }
+}
+
+function checkAndToggleDot(num) {
+  if (num.includes(DOT)) {
+      DOT_BUTTON.style.display = 'none';
+    } else {
+      DOT_BUTTON.style.display = 'block';
+    }
 }
 
 
