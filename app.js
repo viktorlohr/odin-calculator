@@ -99,7 +99,7 @@ INPUT_PHASES = [ENTER_FIRST_NUMBER, ENTER_SECOND_NUMBER];
  * @property {string} lastResult
  */
 
-function clearCalcState(calcState) {
+function resetCalcState(calcState) {
   /**
    * @param {CalcState} calcState
    * @returns {CalcState}
@@ -109,12 +109,13 @@ function clearCalcState(calcState) {
   calcState.num2 = "";
   calcState.operator = NONE;
   calcState.inputPhase = ENTER_FIRST_NUMBER;
-  calcState.currentUserInput = NONE;
-
-  if (calcState.lastResult === undefined) {
-    calcState.lastResult = NONE;
-  } // Note that lastResult is preserverd if it existed;
 }
+
+function clearCalcState(calcState) {
+  resetCalcState(calcState);
+  calcState.lastResult = CLEAR;
+}
+
 
 function transformCalcState(calcState) {
   /**
@@ -131,6 +132,10 @@ function transformCalcState(calcState) {
 
 
   if (OPERATORS.includes(calcState.currentUserInput)) {
+    if (calcState.num1 === "") {
+      calcState.num1 = calcState.lastResult;
+    }
+    
     calcState.operator = calcState.currentUserInput;
     calcState.inputPhase = ENTER_SECOND_NUMBER;
 
@@ -144,27 +149,16 @@ function transformCalcState(calcState) {
         break;
     }
   } else if (calcState.currentUserInput === EQUAL) {
-    if (calcState.num1 === "") {
-
-      if (calcState.lastResult === NONE) {
-         calcState.lastResult = MISSING_FIRST_OPERAND_ERROR;
-         return calcState;
-      }
-
-      calcState.num1 = calcState.lastResult;
-
-    }
-
     if (calcState.num2 === "") {
       calcState.lastResult = MISSING_SECOND_OPERAND_ERROR;
       return calcState;
     }
 
     calcState.lastResult = String(operate(calcState.operator, calcState.num1, calcState.num2));
-    clearCalcState(calcState);
+    resetCalcState(calcState);
 
   } else if (calcState.currentUserInput === CLEAR) {
-    clearCalcState(calcState);
+    resetCalcState(calcState);
 
   } else {
     calcState.lastResult = UNKNOWN_CALC_STATE_ERROR;
@@ -223,7 +217,19 @@ console.assert(f(s4).lastResult === "1");
 /* 
 --- UI ---
 */
+
+
+let calcState = {
+  inputPhase: ENTER_FIRST_NUMBER,
+  num1: "",
+  num2: "",
+  operator: "",
+  lastResult: "",
+  currentUserInput: "",
+}
+
 const CONTAINER_EL = document.querySelector('.calc-container');
+const DISPLAY = document.querySelector('.display');
 
 createUI();
 
@@ -250,7 +256,7 @@ function createDigitBtns() {
     for (let j = 0; j < 3; j++) { 
       let digitEl = document.createElement('button');
 
-      digitEl.textContent = DIGITS[3*j + i];
+      digitEl.textContent = DIGITS[3*i + j];
       
       digitRowEl.appendChild(digitEl);
     }
@@ -306,20 +312,26 @@ let num2 = 0;
 let lastPress = "";
 let lastResult = "";
 
-
-let calcState = {
-  inputPhase: ENTER_FIRST_NUMBER,
-  num1: "",
-  num2: "",
-  operator: "",
-  lastResult: "",
-  currentUserInput: "",
-}
-
 btns = Array.from(document.querySelectorAll('button'));
 btns.map(b => b.addEventListener('click', () => {
     calcState.currentUserInput = b.textContent;
     calcState = transformCalcState(calcState);
+    updateDisplay();
     console.log(calcState);
   }));
+
+
+
+function updateDisplay() {
+  if (calcState.currentUserInput === EQUAL || calcState.currentUserInput === CLEAR) {
+    DISPLAY.textContent = calcState.lastResult;
+
+  } else if (calcState.inputPhase === ENTER_FIRST_NUMBER) {
+    DISPLAY.textContent = calcState.num1;
+  } else if (calcState.inputPhase === ENTER_SECOND_NUMBER) {
+    DISPLAY.textContent = calcState.num1 + " " + calcState.operator + " " + calcState.num2;
+  }
+}
+
+
 
