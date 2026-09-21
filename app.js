@@ -68,7 +68,8 @@ function operate(operator, num1, num2) {
     return INVALID_OPERATOR_ERROR;
   }
 
-  [num1, num2].map(n => Number(n));
+  num1 = Number(num1);
+  num2 = Number(num2);
 
   if ((typeof num1 != 'number') || (typeof num2 != 'number')) {
     return INVALID_NUMBER_ERROR;
@@ -78,6 +79,9 @@ function operate(operator, num1, num2) {
 
   return f(num1,num2);
 }
+
+// Debugging
+console.log(operate(MINUS, '12', '2'))
 
 
 /*
@@ -183,7 +187,7 @@ let testState = {
   lastResult: NONE,
 };
 
-transformCalcState(testState);
+// transformCalcState(testState);
 
 // testState.lastResult = NONE;
 
