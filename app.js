@@ -7,8 +7,9 @@ const INVALID_OPERATOR_ERROR = "InvalidOperatorError";
 const INVALID_PHASE_ERROR = "InvalidPhaseError";
 const INVALID_INPUT_ERROR = "InvalidInputError";
 const UNKNOWN_CALC_STATE_ERROR = "UnkownCalcStateError";
+const MISSING_FIRST_OPERAND_ERROR = "MissingFirstOperandError"
 
-const ERRORS = [DIVIDE_BY_ZERO_ERROR, INVALID_INPUT_ERROR, INVALID_OPERATOR_ERROR, INVALID_PHASE_ERROR, UNKNOWN_CALC_STATE_ERROR];
+const ERRORS = [MISSING_FIRST_OPERAND_ERROR, DIVIDE_BY_ZERO_ERROR, INVALID_INPUT_ERROR, INVALID_OPERATOR_ERROR, INVALID_PHASE_ERROR, UNKNOWN_CALC_STATE_ERROR];
 
 /*
   --- USER INPUT CONSTANTS
@@ -91,8 +92,8 @@ INPUT_PHASES = [ENTER_FIRST_NUMBER, ENTER_SECOND_NUMBER];
  * @typedef {Object} CalcState
  * @property {string} inputPhase -- see definition of INPUT_PHASES
  * @property {string} num1
- * @property {string} operator
  * @property {string} num2
+ * @property {string} operator
  * @property {string} currentUserInput -- see definition of USER_INPUTS
  * @property {string} lastResult
  */
@@ -107,7 +108,11 @@ function clearCalcState(calcState) {
   calcState.num2 = NONE;
   calcState.operator = NONE;
   calcState.inputPhase = ENTER_FIRST_NUMBER;
-  // Note that lastResult is preserverd;
+  calcState.currentUserInput = NONE;
+
+  if (calcState.lastResult === undefined) {
+    calcState.lastResult = NONE;
+  } // Note that lastResult is preserverd if it existed;
 }
 
 function transformCalcState(calcState) {
@@ -132,6 +137,10 @@ function transformCalcState(calcState) {
       calcState.operator = calcState.currentUserInput;
 
       if (calcState.num1 === NONE) {
+        if (calcState.lastResult === NONE) {
+          return MISSING_FIRST_OPERAND_ERROR;
+        }
+        
         calcState.num1 = calcState.lastResult;
       }
 
@@ -167,6 +176,17 @@ function transformCalcState(calcState) {
   return calcState;
 }
 
+/** CalcState Test */
+
+let testState = {
+  num1: NONE,
+  num2: NONE,
+  operator: NONE,
+  inputPhase: ENTER_FIRST_NUMBER,
+  lastResult: NONE,
+};
+
+// testState.lastResult = NONE;
 
 
 /* 
