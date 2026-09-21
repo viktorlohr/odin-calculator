@@ -1,4 +1,4 @@
-const NONE = "none";
+const NONE = "";
 
 // Errors
 const DIVIDE_BY_ZERO_ERROR = "DivideByZeroError";
@@ -7,9 +7,10 @@ const INVALID_OPERATOR_ERROR = "InvalidOperatorError";
 const INVALID_PHASE_ERROR = "InvalidPhaseError";
 const INVALID_INPUT_ERROR = "InvalidInputError";
 const UNKNOWN_CALC_STATE_ERROR = "UnkownCalcStateError";
-const MISSING_FIRST_OPERAND_ERROR = "MissingFirstOperandError"
+const MISSING_FIRST_OPERAND_ERROR = "MissingFirstOperandError";
+const MISSING_SECOND_OPERAND_ERROR = "MissingSecondOperandError";
 
-const ERRORS = [MISSING_FIRST_OPERAND_ERROR, DIVIDE_BY_ZERO_ERROR, INVALID_INPUT_ERROR, INVALID_OPERATOR_ERROR, INVALID_PHASE_ERROR, UNKNOWN_CALC_STATE_ERROR];
+const ERRORS = [MISSING_SECOND_OPERAND_ERROR, MISSING_FIRST_OPERAND_ERROR, DIVIDE_BY_ZERO_ERROR, INVALID_INPUT_ERROR, INVALID_OPERATOR_ERROR, INVALID_PHASE_ERROR, UNKNOWN_CALC_STATE_ERROR];
 
 /*
   --- USER INPUT CONSTANTS
@@ -80,10 +81,6 @@ function operate(operator, num1, num2) {
   return f(num1,num2);
 }
 
-// Debugging
-console.log(operate(MINUS, '12', '2'))
-
-
 /*
   TRANSFORMING THE "CALC STATE"
 */
@@ -136,17 +133,9 @@ function transformCalcState(calcState) {
   if (OPERATORS.includes(calcState.currentUserInput)) {
       calcState.operator = calcState.currentUserInput;
 
-      if (calcState.num1 === NONE) {
-        if (calcState.lastResult === NONE) {
-          return MISSING_FIRST_OPERAND_ERROR;
-        }
-        
-        calcState.num1 = calcState.lastResult;
-      }
-
       calcState.inputPhase = ENTER_SECOND_NUMBER;
 
-  }  else if (DIGITS.includes(calcState.currentUserInput)) {
+  } else if (DIGITS.includes(calcState.currentUserInput)) {
     switch (calcState.inputPhase) {
       case ENTER_FIRST_NUMBER:
         calcState.num1 = calcState.num1.concat(calcState.currentUserInput);
@@ -155,61 +144,87 @@ function transformCalcState(calcState) {
         calcState.num2 = calcState.num2.concat(calcState.currentUserInput);
         break;
     }
+
   } else if (calcState.currentUserInput === EQUAL) {
-    maybe_result = String(operate(calcState.operator, calcState.num1, calcState.num2));
+    if (calcState.num1 === "") {
 
-    if (maybe_result in ERRORS) {
-      return maybe_result;
+      if (calcState.lastResult === NONE) {
+         calcState.lastResult = MISSING_FIRST_OPERAND_ERROR;
+         return calcState;
+      }
+
+      calcState.num1 = calcState.lastResult;
+
     }
-    
-    calcState.lastResult = maybe_result;
 
+    if (calcState.num2 === "") {
+      calcState.lastResult = MISSING_SECOND_OPERAND_ERROR;
+      return calcState;
+    }
+
+    calcState.lastResult = String(operate(calcState.operator, calcState.num1, calcState.num2));
     clearCalcState(calcState);
 
   } else if (calcState.currentUserInput === CLEAR) {
     clearCalcState(calcState);
 
   } else {
-    return UNKNOWN_CALC_STATE_ERROR;
+    calcState.lastResult = UNKNOWN_CALC_STATE_ERROR;
   }
 
   return calcState;
 }
 
-/** CalcState Test */
+// --- Calc State Test ---
 
-let testState = {
-  num1: "10",
+const f = transformCalcState;
+
+let s1 = {
+  num1: "5",
   num2: "2",
   operator: MINUS,
   inputPhase: ENTER_SECOND_NUMBER,
   currentUserInput: EQUAL,
   lastResult: NONE,
 };
+console.assert(f(s1).lastResult === '3');
 
-// transformCalcState(testState);
+let s2 = {
+  num1: "1",
+  num2: "",
+  operator: MINUS,
+  inputPhase: ENTER_SECOND_NUMBER,
+  currentUserInput: EQUAL,
+  lastResult: NONE,
+};
+console.assert(f(s2).lastResult === MISSING_SECOND_OPERAND_ERROR);
 
-// testState.lastResult = NONE;
+let s3 = {
+  num1: "",
+  num2: "2",
+  operator: TIMES,
+  inputPhase: ENTER_SECOND_NUMBER,
+  currentUserInput: EQUAL,
+  lastResult: NONE,
+};
+console.assert(f(s3).lastResult === MISSING_FIRST_OPERAND_ERROR);
+
+let s4 = {
+  num1: "",
+  num2: "2",
+  operator: MINUS,
+  inputPhase: ENTER_SECOND_NUMBER,
+  currentUserInput: EQUAL,
+  lastResult: "3",
+};
+
+console.assert(f(s4).lastResult === "1");
+
 
 
 /* 
 --- UI ---
 */
-
-// Size constants
-// TINIEST = '2px';
-// TINY = '4px';
-// SMALLEST = '6px';
-// SMALLER = '8px';
-// SMALL = '10px';
-// NORMAL = '12px';
-// LARGE = '16px';
-// LARGER = '24px';
-// LARGEST = '32px';
-// HUGE = '42px';
-// HUGER = '48px';
-// HUGEST = '64px';
-
 const CONTAINER_EL = document.querySelector('.calc-container');
 
 createUI();
